@@ -1,0 +1,9 @@
+1° IMPLEMENT ADDING AN ENCODiNG FOR A SINGLE IMAGE IN THE PICKLE FILE 
+2° CREATE A ROUTE TO INTEGRATE CLUSTERING FUNCTIONNALITY
+
+
+
+WHEN A NEW IMAGE CONTAINS A HUMAN : 
+ - 1 : make encoding 
+ - 2 : call clustering to get updated results
+ - 3 : return clustering data 

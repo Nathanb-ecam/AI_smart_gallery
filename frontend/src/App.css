@@ -1,0 +1,41 @@
+body{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.App-content{
+  margin: 4rem;
+}
+
+.upload-section{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.image-upload-form{
+  display: flex;
+}
+
+.image-upload-form .file-upload{
+ 
+
+}
+
+
+.gallery{
+  display: flex;
+  flex-wrap:wrap;
+}
+
+.galleryimage{
+  object-fit: cover;
+  width: 200px;
+  height: 200px;
+}
+
+.image-box{
+  border:1px solid lightgray;
+  margin: 1rem;
+  padding: 1rem;
+}

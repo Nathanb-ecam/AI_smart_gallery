@@ -1,0 +1,10 @@
+numpy
+opencv-python
+django
+djangorestframework
+django-cors-headers
+Pillow
+scikit-learn
+imutils
+matplotlib
+face_recognition
