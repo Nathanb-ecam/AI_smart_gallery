@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import ImageList from './ImageList';
 
 function ShowGallery(){
   const api_ip = import.meta.env.REACT_APP_API_CONTACT_POINT || 'localhost';
@@ -49,22 +49,21 @@ function ShowGallery(){
       <h2>Gallery</h2>
       <div className="gallery">
       {
-        humanImages && humanImages.length > 0 && humanImages.map((item,index) => (
+        humanImages && humanImages.length > 0 && humanImages.filter() && humanImages.map((item,index) => (
           <div className="image-box" key={index}>
             {/* <p>{item.image_url}</p> */}
-            <p>{item.filename}</p>
-            <img className="galleryimage" src={BASE_URL+item.image_url} alt={item.createdAt} />
             <p>{item.result_json["image-detection"]}</p>
+            <img className="galleryimage" src={BASE_URL+item.image_url} alt={item.createdAt} />
+            {/* {item.cluster_group!=null ? <p>Cluster : {item.cluster_group.ids},</p> : null } */}
           </div>
         ))
       }
       {
         animalImages && animalImages.length > 0 && animalImages.map((item,index) => (
           <div className="image-box" key={index}>
-            {/* <p>{item.image_url}</p> */}
-            <p>{item.filename}</p>
-            <img className="galleryimage" src={BASE_URL+item.image_url} alt={item.createdAt} />
+            {/* <p>{item.filename}</p> */}
             <p>{item.result_json["image-detection"]}</p>
+            <img className="galleryimage" src={BASE_URL+item.image_url} alt={item.createdAt} />
           </div>
         ))
       }

@@ -170,7 +170,7 @@ def predict_image(request):
             respond with the url of the image and the detection result
         """
         if("person" in all_results):
-            detected_image = HumanImage(image=uploaded_file, result_json={"image-detection": all_results[0]})
+            detected_image = HumanImage(image=uploaded_file, result_json={"image-detection": all_results[0]},cluster_group={"ids":[],"names":[]})
             detected_image.save()
         elif (len(all_results)!=0) and ('person' not in all_results):
             # No humans so if there are items it should be animals
@@ -191,7 +191,27 @@ def predict_image(request):
                 print("[INFO] This image contains a person")
                 print("[INFO] Need to process encodings")
                 make_encodings(imagePaths=[image_path],pickle_file_path = PICKLE_FILE_PATH)
-                perform_clustering("ai_project_API/model_data/encodings.pickle")
+                clusters = perform_clustering("ai_project_API/model_data/encodings.pickle")
+                # print("clusters",clusters)
+                # print("\n\n")
+                # WE NEED TO FILTER CLUSTER LIST TO UPDATE DATABASE 
+                filtered_clusters = {}
+                for obj in clusters:
+                    for img_paths in obj["face_paths"]:
+                        if img_paths not in filtered_clusters.keys():
+                            filtered_clusters[img_paths] = [obj["labelId"]]
+                        else:
+                            updatedGroups = filtered_clusters[img_paths]
+                            updatedGroups.append(obj["labelId"])
+                            filtered_clusters[img_paths] = updatedGroups
+                # print("filtered_clusters".upper(), filtered_clusters)
+                for current_img_path in filtered_clusters:
+                    matching_instances = HumanImage.objects.filter(image__contains=current_img_path)
+                    for detected_image in matching_instances:
+                        detected_image.cluster_group = {"ids":filtered_clusters[current_img_path],"names":[]}
+                        # cluster_group : {"ids":[],"names":[]}
+                        detected_image.save()
+                break
 
 
 

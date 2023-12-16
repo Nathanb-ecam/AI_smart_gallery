@@ -17,7 +17,7 @@ def make_encodings(imagePaths,pickle_file_path):
     else:
         data = []
 
-    print("[INFO] quantifying faces...")
+    print("[INFO] ENCODING faces...")
 
     for (i, imagePath) in enumerate(imagePaths):
         # load the input image and convert it from RGB (OpenCV ordering)
@@ -27,7 +27,8 @@ def make_encodings(imagePaths,pickle_file_path):
         try:
             image = cv2.imread(imagePath)
             rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            boxes = face_recognition.face_locations(rgb,model="cnn")
+            boxes = face_recognition.face_locations(rgb,model="hog")
+            print(f"{len(boxes)} person(s) found in the image")
             
             # compute the facial embedding for the face
             encodings = face_recognition.face_encodings(rgb, boxes)
@@ -44,6 +45,7 @@ def make_encodings(imagePaths,pickle_file_path):
         pickle.dump(data,file)
 
     print("[INFO] Updated encodings.pickle with new data.")
+    print("\n\n\n")
 
 
 
@@ -62,7 +64,7 @@ def perform_clustering(pickle_file_path):
             data = np.array(data)
             encodings = [d["encoding"] for d in data]
 
-            print("[INFO] clustering...")
+            print("[INFO] CLUSTERING...")
             clt = DBSCAN(metric="euclidean",eps=0.52, min_samples=2) # , n_jobs=args["jobs"]
             clt.fit(encodings)
             # determine the total number of unique faces found in the dataset
@@ -70,28 +72,34 @@ def perform_clustering(pickle_file_path):
             # print("labelIDs",labelIDs)
             numUniqueFaces = len(np.where(labelIDs > -1)[0])
             print("[INFO] # unique faces: {}".format(numUniqueFaces))
-
-
+            clusters = []
             for labelID in labelIDs:
                 # find all indexes into the `data` array that belong to the
                 # current label ID, then randomly sample a maximum of 25 indexes
                 # from the set
-                print("[INFO] faces for face ID: {}".format(labelID))
+                # print("[INFO] faces for face ID: {}".format(labelID))
                 idxs = np.where(clt.labels_ == labelID)[0]
                 idxs = np.random.choice(idxs, size=min(25, len(idxs)),replace=False)
                 # initialize the list of faces to include in the montage
                 faces = []
-                
+
                 for i in idxs:
                     current_img_path = data[i]["imagePath"]
                     current_img_path = current_img_path.replace("uploads/","")
                     print(f'Image {current_img_path} is in cluster n° {labelID}')
-                    matching_instances = HumanImage.objects.filter(image__contains=current_img_path)
-                    for detected_image in matching_instances:
-                        detected_image.cluster_group = labelID
-                        detected_image.save()
-                        print("[INFO] CLUSTERING SAVED")
-            
+
+                    face_path = current_img_path
+                    faces.append(face_path)
+
+
+                clusters.append({"labelId":int(labelID),"face_paths":faces})
+
+    
+            # print("clusters", clusters)
+            return clusters
+        return Exception(f"Pickle file not found : {pickle_file_path}")
+
     except Exception as e:
         print("SOMETHING WENT WRONG IN CLUSTERING 'perform_clustering()'")
         print(e)
+        return e
