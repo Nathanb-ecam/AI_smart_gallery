@@ -4,38 +4,144 @@ body{
   box-sizing: border-box;
 }
 
+:root{
+  --main-green: #459445;
+  --medium-green: #497a49;
+  --light-green: #c1d1c1;
+
+  --main-black: #090a09;
+  --medium-black: #2c312c;
+  --light-black: #6a736a;
+}
+
+/* navbar */
+.navbar{
+  width: 100%;
+  position:sticky;
+}
+
+
+
 .App-content{
-  margin: 4rem;
+  /* margin: 4rem; */
+  width: 100%;
+  overflow: scroll;
+
 }
 
 .upload-section{
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-}
-.image-upload-form{
-  display: flex;
-}
-
-.image-upload-form .file-upload{
- 
-
+  padding:0.3rem 1rem;
+  background:var(--light-green);
+  position:sticky;
+  padding: 1rem 0;
+  bottom:0%;
+  width: 100%;
 }
 
-
-.gallery{
-  display: flex;
-  flex-wrap:wrap;
+.gallery-header .filter-dropdown {
+  background: var(--main-green); 
+  color:lightgray;
 }
+
+
+.gallery-section{
+  width: 100%;
+  height: 100vh;
+  padding: 2rem 4rem;
+  /* background: red; */
+}
+
+.gallery-content{
+  margin-top: 2rem;
+}
+
 
 .galleryimage{
   object-fit: cover;
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
 }
 
-.image-box{
-  border:1px solid lightgray;
-  margin: 1rem;
-  padding: 1rem;
+
+
+/* DATE SORTED  */
+.date-sorted{
+  width: 100%;
+  height: 100%;
+  /* background-color: blue; */
+  /* display: flex;
+  flex-direction: column; */
 }
+
+.date-sorted h3{
+  border-bottom: 1px solid var(--main-black);
+}
+.date-sorted-list{
+  /* background:lightgray; */
+  display: flex;
+  margin: 3rem;
+  flex-wrap: wrap;
+
+}
+
+.date-sorted-list-item{
+  /* border:1px solid  red; */
+  margin: 1rem;
+}
+
+.date-sorted-list-item:hover .image-detected{
+  opacity: 1;
+  display: block;
+}
+
+.date-sorted-list-item .image-detected{
+  opacity: 0;
+  color:black;
+  position: absolute;
+}
+
+.date-sorted-list-item:hover .galleryimage{
+  transition: opacity 0.5s ease-in-out;
+  opacity: 0.4;
+}
+
+
+
+/* CLASS SORTED  */
+
+.class-sorted{
+  
+}
+
+.class-sorted .title{
+  border-bottom: 1px solid black;
+  
+}
+
+.class-sorted-images{
+  margin: 1rem;
+}
+.class-sorted .subclass{
+  display: flex;
+  /* padding: 1rem; */
+  margin:2rem 5rem;
+  flex-wrap: wrap;
+
+}
+
+
+/* CLUSTER SORTED */
+
+.all-cluster-groups .cluster-single-group{
+  display: flex;
+  /* background: gray; */
+}
+
+.all-cluster-groups .title{
+  margin-bottom: 1rem;
+  border-bottom: 1px solid black;
+}
+

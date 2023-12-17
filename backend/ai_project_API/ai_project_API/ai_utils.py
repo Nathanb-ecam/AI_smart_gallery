@@ -5,7 +5,6 @@ import os
 import pickle
 from sklearn.cluster import DBSCAN
 import numpy as np
-from .models import HumanImage
 
 
 def make_encodings(imagePaths,pickle_file_path):
@@ -36,13 +35,15 @@ def make_encodings(imagePaths,pickle_file_path):
             d = [{"imagePath": imagePath, "loc": box, "encoding": enc} for (box, enc) in zip(boxes, encodings)]
             data.extend(d)
             print("[INFO] Image succesfully encoded to pickle file")
+            
+            with open(pickle_file_path, 'wb') as file:
+                pickle.dump(data,file)
 
         except Exception as e:
             print("[ERROR] Image encoding went wrong ... ")
             print(e)
 
-    with open(pickle_file_path, 'wb') as file:
-        pickle.dump(data,file)
+
 
     print("[INFO] Updated encodings.pickle with new data.")
     print("\n\n\n")

@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 
-function SendImageForm(){
+interface Props{
+  onSubmit:()=>void;
+}
+
+
+function SendImageForm({onSubmit}:Props){
   
   const BASE_URL = "http://localhost:8000/api"
 
@@ -28,6 +33,7 @@ function SendImageForm(){
         });
         if (response.ok) {
             const data = await response.json();
+            onSubmit()
             console.log('Upload successful:', data);
       } else {
         console.error('Error reading answer:', response.statusText);
@@ -39,11 +45,8 @@ function SendImageForm(){
 
   return (
     <div className='upload-section'>
-      <h2>Ajouter une image</h2>
-      <div className="image-upload-form">
         <input className="file-upload" type="file" onChange={handleImageChange} required/>
         <button onClick={handleUpload}>Enregistrer l'image</button>
-      </div>
     </div>
   );
 };

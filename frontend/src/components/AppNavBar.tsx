@@ -8,7 +8,7 @@ import Navbar from 'react-bootstrap/Navbar';
 function AppNavbar() {
     return (
         <>
-            <Navbar bg="primary" data-bs-theme="dark">
+            <Navbar className="navbar bg-body-tertiary" bg="primary" data-bs-theme="dark">
                 <Container>
                 <Navbar.Brand href="#home">AI </Navbar.Brand>
                 <Nav className="me-auto">

@@ -1,72 +1,121 @@
 import React, { useEffect, useState } from 'react';
-import ImageList from './ImageList';
+import ImageList, { ListFilteringOptions } from './ImageList';
+import Dropdown from 'react-bootstrap/Dropdown';
+import { ApiImageObject } from '../utils/DTOinterfaces';
 
-function ShowGallery(){
-  const api_ip = import.meta.env.REACT_APP_API_CONTACT_POINT || 'localhost';
-  const BASE_URL = `http://${api_ip}:8000`
 
-  const [humanImages, setHumanImages] = useState<Array<{image_url:string;filename:string,result_json:Object;cluster_group:number,createdAt:string;}>>([]);
-  const [animalImages, setAnimalImages] = useState<Array<{image_url:string;filename:string,result_json:Object;createdAt:string;}>>([]);
-  const [otherImages, setOtherImages] = useState<Array<{image_url:string;filename:string,result_json:Object;createdAt:string;}>>([]);
-  // const [images, setImages] = useState(null);
+interface Props{
+  formSubmitted:boolean;
+  BASE_URL:string;
+
+}
+
+
+
+function ShowGallery({formSubmitted,BASE_URL}:Props){
+
+  const [galleryImages, setGalleryImages] = useState<Array<ApiImageObject>>([]);
+  const [dropdownValue,setDropdownValue] = useState<string | null>(null);
+  const [filteringOption,setFilteringOption] = useState<ListFilteringOptions>(ListFilteringOptions.BYDATE);
+
+  const handleDropdownSelect:React.ComponentProps<typeof Dropdown>['onSelect']= (eventKey:string) => {
+    setDropdownValue(eventKey as string);
+    // console.log(eventKey as string);
+    switch(eventKey as string){
+      case 'DATE':
+        setFilteringOption(ListFilteringOptions.BYDATE)
+        break
+      case 'CLUSTERED':
+        const fetchClusteredGallery = async () => {
+          try {
+            const response = await fetch(BASE_URL+"/api/cluster_gallery");
+            const result = await response.json();
+            console.log("Gallery", result)
+            if(result.gallery){
+              setGalleryImages(result.gallery);
+              setFilteringOption(ListFilteringOptions.CLUSTERED)
+            }
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
+        fetchClusteredGallery()
+        
+        break
+      case 'CLASSIFIED':
+        setFilteringOption(ListFilteringOptions.CLASSIFIED)
+        break
+    }
+  }
+
+
+  const fetchGallery = async () => {
+    try {
+      const response = await fetch(BASE_URL+"/api/fetch_gallery");
+      // const response = await fetch(BASE_URL+"/api/cluster_gallery");
+      const result = await response.json();
+      console.log("Gallery", result)
+      if(result.gallery){
+        setGalleryImages(result.gallery);
+      }
+
+
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
     useEffect(() => {
-      const fetchGallery = async () => {
-        try {
-          const human_response = await fetch(BASE_URL+"/api/fetch_humans");
-          const human_result = await human_response.json();
-          console.log("Human", human_result)
-          if(human_result.humans){
-            setHumanImages(human_result.humans);
-          }
+      // Perform actions when formSubmitted changes
+      if (formSubmitted) {
+        // Trigger any logic needed in response to the form submission
+        // For example, refetch data or update internal state
+        console.log('Form submitted. Recompose Gallery.');
 
-          const animal_response = await fetch(BASE_URL+"/api/fetch_animals");
-          const animal_result = await animal_response.json();
-          console.log("Animal", animal_result)
-          setAnimalImages(animal_result.animals);
-
-          const other_response = await fetch(BASE_URL+"/api/fetch_others");
-          const other_result = await other_response.json();
-          console.log("Other", other_result)
-          setOtherImages(other_result.others);
-
-
-
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      };
-  
-      fetchGallery();
-    }, []);
-
-
+        fetchGallery()
+      }
+    }, [formSubmitted]);
 
 
 
   return (
-    <div>
-      <h2>Gallery</h2>
-      <div className="gallery">
-      {
+    <div className='gallery-section'>
+      <div className="gallery-header">
+        <Dropdown  onSelect={handleDropdownSelect}>
+          <Dropdown.Toggle className="filter-dropdown" variant="success" id="dropdown-basic">
+            FILTERS
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item eventKey="CLUSTERED">
+              CLUSTERED
+            </Dropdown.Item>
+            <Dropdown.Item eventKey="CLASSIFIED">
+              CLASSIFIED
+            </Dropdown.Item>
+            <Dropdown.Item eventKey="DATE">
+              BY DATE
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+
+      <div className="gallery-content">
+        <ImageList imageList={galleryImages} FilteringOption={filteringOption} BASE_URL={BASE_URL}/>
+
+
+        {/* {galleryImages && <ImageList imageList={galleryImages} />} */}
+      {/* {
         humanImages && humanImages.length > 0 && humanImages.filter() && humanImages.map((item,index) => (
           <div className="image-box" key={index}>
-            {/* <p>{item.image_url}</p> */}
+            <p>{item.image_url}</p>
             <p>{item.result_json["image-detection"]}</p>
             <img className="galleryimage" src={BASE_URL+item.image_url} alt={item.createdAt} />
-            {/* {item.cluster_group!=null ? <p>Cluster : {item.cluster_group.ids},</p> : null } */}
+            {item.cluster_group!=null ? <p>Cluster : {item.cluster_group.ids},</p> : null }
           </div>
         ))
-      }
-      {
-        animalImages && animalImages.length > 0 && animalImages.map((item,index) => (
-          <div className="image-box" key={index}>
-            {/* <p>{item.filename}</p> */}
-            <p>{item.result_json["image-detection"]}</p>
-            <img className="galleryimage" src={BASE_URL+item.image_url} alt={item.createdAt} />
-          </div>
-        ))
-      }
+      } */}
+
       </div>
     </div>
   );

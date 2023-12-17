@@ -5,17 +5,24 @@ import 'bootstrap/dist/css/bootstrap.css'
 import SendImageForm from './components/SendImageForm'
 import ShowGallery from './components/ShowGallery'
 import AppNavbar from './components/AppNavBar'
+import { BASE_URL } from './utils/constants'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [formSubmitted, setFormSubmitted] = useState(true);
+
+  const handleFormSubmit = () => {
+    setFormSubmitted(true);
+  };
+
 
   return (
     <>
       <AppNavbar></AppNavbar>
     <div className="App-content">
-      <SendImageForm></SendImageForm>
-      <ShowGallery></ShowGallery>
+ 
+      <ShowGallery formSubmitted={formSubmitted} BASE_URL={BASE_URL} ></ShowGallery>
     </div>
+    <SendImageForm onSubmit = {handleFormSubmit}></SendImageForm>
     </>
   )
 }
