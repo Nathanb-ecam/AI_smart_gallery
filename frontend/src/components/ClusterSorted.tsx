@@ -5,12 +5,14 @@ import { ApiImageObject } from '../utils/DTOinterfaces';
 
 interface Props{
     groups: any;
+    cluster_labels:Array<Object>
     BASE_URL:string;
 }
 
 
-function ClusterSorted({groups,BASE_URL}:Props){
+function ClusterSorted({groups,cluster_labels,BASE_URL}:Props){
     console.log("Cluster Group",groups)
+    console.log("cluster_labels",cluster_labels)
   return (
       <div className="all-cluster-groups">
         <h3 className='title'>Cluster-sorted</h3>

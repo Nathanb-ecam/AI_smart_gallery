@@ -13,7 +13,7 @@ export function GroupByClusterId(imageList:Array<ApiImageObject>)  {
       console.error('imageList is not an array:', imageList);
       return {};
     }
-
+    console.log(imageList)
     var groups  = {}
     for(const obj of imageList){
       // console.log(obj.result_json["image-detection"])

@@ -6,11 +6,9 @@ from django.db import models
 #     cluster_group = models.JSONField()
 #     created_at = models.DateTimeField(auto_now_add=True)
 
-# class AnimalImage(models.Model):
-#     image = models.ImageField(upload_to='animal')
-#     result_json = models.JSONField()
-#     # cluster_group = models.IntegerField(blank=True, null=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
+class ClusterNames(models.Model):
+    cluster_id = models.IntegerField()
+    cluster_name = models.CharField(max_length=255)
 
 
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ClusterSorted from './ClusterSorted';
 import { CompareDates, GroupByClusterId,SortByClasses  } from '../utils/ListSortings';
 // const ANIMAL_OF_INTEREST = ['bird','cat','dog','horse','sheep','cow','elephant','bear','zebra','giraffe']
-import { ApiImageObject } from '../utils/DTOinterfaces';
+import { ApiImageObject, ClusterName } from '../utils/DTOinterfaces';
 import DateSorted from './DateSorted';
 import ClassSorted from './ClassSorted';
 
@@ -26,53 +26,56 @@ interface Props{
 
 
 function ImageList({imageList, FilteringOption = null,BASE_URL}:Props){
-    let displayedImages:Array<ApiImageObject> = []
-    let dateSorted:Array<ApiImageObject> = []
-    let clusterSorted = {}
-    let classSorted:Array<Array<ApiImageObject>> = []
+  const [clusterNames, setClusterNames] = useState<Array<ClusterName>>([]);
+  const [clusterSorted, setClusterSorted] = useState<any>({});
+  const [classSorted, setClassSorted] = useState<Array<Array<ApiImageObject>>>([]);
+  const [dateSorted, setDateSorted] = useState<Array<ApiImageObject>>([]);
 
-    switch(FilteringOption){
-        case ListFilteringOptions.BYDATE:
-            dateSorted = imageList.sort(CompareDates)
-            break
-        case ListFilteringOptions.CLASSIFIED:
-            const { personList, animalList, otherList } = SortByClasses(imageList);
-            classSorted.push(personList,animalList,otherList)
-            break
-        case ListFilteringOptions.CLUSTERED:
-            const sort:Array<Array<ApiImageObject>> = GroupByClusterId(imageList)
-            // clusterSorted.push(sort)
-            // console.log("sort",sort)
-            clusterSorted = sort;
-            // console.log("clusterSorted",clusterSorted)
-            break
-
-        // default:
-        //     displayedImages = imageList;
-        //     break;
+  const fetchClusteringData = async () => {
+    try {
+      const response = await fetch(BASE_URL + "/api/cluster_names");
+      const result = await response.json();
+      if (result.cluster_names) {
+        const sort = GroupByClusterId(imageList);
+        setClusterSorted(sort);
+        setClusterNames(result.cluster_names);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
-
-
+  };
+  
+  useEffect(() => {
+      switch (FilteringOption) {
+        case ListFilteringOptions.BYDATE:
+          setDateSorted(imageList.sort(CompareDates));
+          setClassSorted([])
+          setClusterSorted({})
+          break;
+        case ListFilteringOptions.CLASSIFIED:
+          const { personList, animalList, otherList } = SortByClasses(imageList);
+          setClassSorted([personList, animalList, otherList]);
+          setDateSorted([])
+          setClusterSorted({})
+          break;
+        case ListFilteringOptions.CLUSTERED:
+          fetchClusteringData();
+          setClassSorted([])
+          setDateSorted([])
+          break;
+        default:
+          // Handle default case or set default values
+          break;
+      }
+    }, [FilteringOption, imageList, BASE_URL]);
 
 
 
 
   return (
       <>
-      {
-        displayedImages && displayedImages.length > 0 && displayedImages.map((item,index) => (
-          <div className="image-box" key={index}>
-            {/* <p>{item.image_url}</p> */}
-            <p>{item.result_json["image-detection"]}</p>
-            <img className="galleryimage" src={BASE_URL+item.image_url} alt={item.created_at} />
-            {item.cluster_ids!=null ? <p>Cluster : {item.cluster_ids.ids}</p> : null }
-          </div>
-        ))
-      }
-
-
         {clusterSorted && Object.keys(clusterSorted).length != 0 &&
-          <ClusterSorted groups={clusterSorted} BASE_URL={BASE_URL} />
+          <ClusterSorted groups={clusterSorted} cluster_labels={clusterNames} BASE_URL={BASE_URL} />
         }
 
         {dateSorted && dateSorted.length != 0 &&

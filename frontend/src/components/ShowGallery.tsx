@@ -30,7 +30,7 @@ function ShowGallery({formSubmitted,BASE_URL}:Props){
           try {
             const response = await fetch(BASE_URL+"/api/cluster_gallery");
             const result = await response.json();
-            console.log("Gallery", result)
+            // console.log("Gallery", result)
             if(result.gallery){
               setGalleryImages(result.gallery);
               setFilteringOption(ListFilteringOptions.CLUSTERED)
@@ -40,7 +40,6 @@ function ShowGallery({formSubmitted,BASE_URL}:Props){
           }
         };
         fetchClusteredGallery()
-        
         break
       case 'CLASSIFIED':
         setFilteringOption(ListFilteringOptions.CLASSIFIED)
@@ -49,22 +48,7 @@ function ShowGallery({formSubmitted,BASE_URL}:Props){
   }
 
 
-  const fetchGallery = async () => {
-    try {
-      const response = await fetch(BASE_URL+"/api/fetch_gallery");
-      // const response = await fetch(BASE_URL+"/api/cluster_gallery");
-      const result = await response.json();
-      console.log("Gallery", result)
-      if(result.gallery){
-        setGalleryImages(result.gallery);
-      }
 
-
-
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
 
     useEffect(() => {
       // Perform actions when formSubmitted changes
@@ -72,7 +56,6 @@ function ShowGallery({formSubmitted,BASE_URL}:Props){
         // Trigger any logic needed in response to the form submission
         // For example, refetch data or update internal state
         console.log('Form submitted. Recompose Gallery.');
-
         fetchGallery()
       }
     }, [formSubmitted]);
@@ -102,19 +85,6 @@ function ShowGallery({formSubmitted,BASE_URL}:Props){
 
       <div className="gallery-content">
         <ImageList imageList={galleryImages} FilteringOption={filteringOption} BASE_URL={BASE_URL}/>
-
-
-        {/* {galleryImages && <ImageList imageList={galleryImages} />} */}
-      {/* {
-        humanImages && humanImages.length > 0 && humanImages.filter() && humanImages.map((item,index) => (
-          <div className="image-box" key={index}>
-            <p>{item.image_url}</p>
-            <p>{item.result_json["image-detection"]}</p>
-            <img className="galleryimage" src={BASE_URL+item.image_url} alt={item.createdAt} />
-            {item.cluster_group!=null ? <p>Cluster : {item.cluster_group.ids},</p> : null }
-          </div>
-        ))
-      } */}
 
       </div>
     </div>

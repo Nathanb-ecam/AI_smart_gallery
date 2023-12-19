@@ -1,3 +1,4 @@
+import json
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt
@@ -8,7 +9,7 @@ from django.db.models import F
 import cv2
 import numpy as np
 
-from .models import GalleryImage
+from .models import GalleryImage, ClusterNames
 from ai_project_API.ai_utils import make_encodings, perform_clustering
 
 with open("ai_project_API/model_data/coco.names", "r") as f:
@@ -37,6 +38,33 @@ def draw_element_informations(image,element_class_id,confidence,element_boundari
     cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
     cv2.putText(image, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
     return element_class,confidence
+
+@api_view(['GET'])
+def get_cluster_labels(request):
+    all_cluster_labels = ClusterNames.objects.all()
+    # Serialize the objects to a JSON format
+    serialized_cluster_names = [
+        {
+            'cluster_id': cluster.cluster_id,
+            'cluster_name': cluster.cluster_name,
+        }
+        for cluster in all_cluster_labels
+    ]
+    return Response({'cluster_names': serialized_cluster_names})
+
+@csrf_exempt
+def add_cluster_name(request):
+    # Create a new record
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            obj = ClusterNames.objects.create(cluster_id=data['cluster_id'], cluster_name=data['cluster_name'])
+            print(data)
+            response_data = {'cluster_id': obj.cluster_id, 'cluster_name': obj.cluster_name}
+            return JsonResponse(response_data, status=201)
+        except Exception as e:
+            return JsonResponse({"error":e}, status=500)
+
 
 @api_view(['GET'])
 def get_gallery(request):
@@ -175,13 +203,23 @@ def cluster_human_images(request):
                             filtered_clusters[img_paths] = updatedGroups
 
         # print("filtered_clusters".upper(), filtered_clusters)
+        all_cluster_ids = []
         for current_img_path,ids in filtered_clusters.items():
             matching_instances = GalleryImage.objects.filter(image__contains=current_img_path)
             for detected_image in matching_instances:
+                # cluster_data = {}
+                for id in ids:
+                    if id not in all_cluster_ids:
+                        all_cluster_ids.append(id)
+                # print("stored cluster data",cluster_data)
                 detected_image.cluster_ids["ids"] = ids
+                # detected_image.cluster_ids["ids"] = cluster_data
                 detected_image.save()
                 # filtered_clusters.pop()
                 # print(current_img_path,ids)
+
+        print("all_cluster_ids",all_cluster_ids)
+        #for      
         return redirect('get_gallery')
     
     except Exception as e:

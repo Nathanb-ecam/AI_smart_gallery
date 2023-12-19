@@ -18,14 +18,16 @@ body{
 .navbar{
   width: 100%;
   position:sticky;
+  height: 8vh;
 }
-
 
 
 .App-content{
   /* margin: 4rem; */
   width: 100%;
-  overflow: scroll;
+  /* overflow: scroll; */
+  height: 84vh;
+
 
 }
 
@@ -39,6 +41,7 @@ body{
   padding: 1rem 0;
   bottom:0%;
   width: 100%;
+  height: 8vh;
 }
 
 .gallery-header .filter-dropdown {
@@ -49,13 +52,14 @@ body{
 
 .gallery-section{
   width: 100%;
-  height: 100vh;
+  /* height: 100vh; */
   padding: 2rem 4rem;
   /* background: red; */
 }
 
 .gallery-content{
   margin-top: 2rem;
+
 }
 
 
@@ -71,6 +75,7 @@ body{
 .date-sorted{
   width: 100%;
   height: 100%;
+  overflow: auto;
   /* background-color: blue; */
   /* display: flex;
   flex-direction: column; */

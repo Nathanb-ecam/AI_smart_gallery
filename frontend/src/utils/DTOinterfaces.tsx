@@ -1,5 +1,6 @@
 export interface ClusterIds{
     "ids":Array<number>;
+    // "ids":Array<Object>;
 }
 
 
@@ -7,6 +8,10 @@ export interface DetectedClasses{
     "image-detection":Array<string>;
 }
 
+export interface ClusterName{
+    "cluster_id":number;
+    "cluster_name":string;
+}
 
 
 export interface ApiImageObject{
