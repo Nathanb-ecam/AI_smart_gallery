@@ -156,8 +156,8 @@ def predict_image(request):
 def cluster_human_images(request):
     try:
         clusters = perform_clustering("ai_project_API/model_data/encodings.pickle")
-        print("clusters",clusters)
-        print("\n\n")
+        # print("clusters",clusters)
+        # print("\n\n")
         # WE NEED TO FILTER CLUSTER LIST TO UPDATE DATABASE 
         filtered_clusters = {}
         for obj in clusters:

@@ -21,20 +21,20 @@ def make_encodings(imagePaths,pickle_file_path):
     for (i, imagePath) in enumerate(imagePaths):
         # load the input image and convert it from RGB (OpenCV ordering)
         # to dlib ordering (RGB)
-        print(f"[INFO] processing image {i+1}/{len(imagePaths)}")
+        # print(f"[INFO] processing image {i+1}/{len(imagePaths)}")
         # print(imagePath)
         try:
             image = cv2.imread(imagePath)
             rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             boxes = face_recognition.face_locations(rgb,model="hog")
-            print(f"{len(boxes)} person(s) found in the image")
+            # print(f"{len(boxes)} person(s) found in the image")
             
             # compute the facial embedding for the face
             encodings = face_recognition.face_encodings(rgb, boxes)
             # build a dictionary of the image path, bounding box location,and facial encodings for the current image
             d = [{"imagePath": imagePath, "loc": box, "encoding": enc} for (box, enc) in zip(boxes, encodings)]
             data.extend(d)
-            print("[INFO] Image succesfully encoded to pickle file")
+            # print("[INFO] Image succesfully encoded to pickle file")
             
             with open(pickle_file_path, 'wb') as file:
                 pickle.dump(data,file)
@@ -72,7 +72,7 @@ def perform_clustering(pickle_file_path):
             labelIDs = np.unique(clt.labels_)
             # print("labelIDs",labelIDs)
             numUniqueFaces = len(np.where(labelIDs > -1)[0])
-            print("[INFO] # unique faces: {}".format(numUniqueFaces))
+            # print("[INFO] # unique faces: {}".format(numUniqueFaces))
             clusters = []
             for labelID in labelIDs:
                 # find all indexes into the `data` array that belong to the
@@ -87,7 +87,7 @@ def perform_clustering(pickle_file_path):
                 for i in idxs:
                     current_img_path = data[i]["imagePath"]
                     current_img_path = current_img_path.replace("uploads/","")
-                    print(f'Image {current_img_path} is in cluster n° {labelID}')
+                    # print(f'Image {current_img_path} is in cluster n° {labelID}')
 
                     face_path = current_img_path
                     faces.append(face_path)
