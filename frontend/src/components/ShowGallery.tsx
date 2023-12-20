@@ -6,13 +6,14 @@ import { ApiImageObject } from '../utils/DTOinterfaces';
 
 interface Props{
   formSubmitted:boolean;
+  refreshGallery:boolean;
   BASE_URL:string;
 
 }
 
 
 
-function ShowGallery({formSubmitted,BASE_URL}:Props){
+function ShowGallery({formSubmitted,refreshGallery,BASE_URL}:Props){
 
   const [galleryImages, setGalleryImages] = useState<Array<ApiImageObject>>([]);
   const [dropdownValue,setDropdownValue] = useState<string | null>(null);
@@ -25,38 +26,37 @@ function ShowGallery({formSubmitted,BASE_URL}:Props){
     switch(eventKey as string){
       case 'DATE':
         setFilteringOption(ListFilteringOptions.BYDATE)
+        // fetchGallery()
         break
       case 'CLUSTERED':
         setFilteringOption(ListFilteringOptions.CLUSTERED)
         break
       case 'CLASSIFIED':
         setFilteringOption(ListFilteringOptions.CLASSIFIED)
+        // fetchGallery()
         break
     }
   }
 
+   useEffect(()=>{
+     const fetchGallery = async () => {
+       try {
+         const response = await fetch(BASE_URL+"/api/fetch_gallery");
+         const result = await response.json();
+         // console.log("Gallery", result)
+         if(result.gallery){
+           setGalleryImages(result.gallery);
+          //  console.log("gallery",result.gallery)
+           
+         }
+       } catch (error) {
+         // console.error('Error fetching data:', error);
+       }
+     };
+     fetchGallery()
+   },[refreshGallery])
 
-  const fetchGallery = async () => {
-    try {
-      const response = await fetch(BASE_URL+"/api/fetch_gallery");
-      const result = await response.json();
-      // console.log("Gallery", result)
-      if(result.gallery){
-        setGalleryImages(result.gallery);
-      }
-    } catch (error) {
-      // console.error('Error fetching data:', error);
-    }
-  };
-
-    useEffect(() => {
-      if (formSubmitted) {
-        // console.log('Form submitted. Recompose Gallery.');
-        fetchGallery()
-
-
-      }
-    }, [formSubmitted]);
+  
 
 
 
@@ -82,7 +82,7 @@ function ShowGallery({formSubmitted,BASE_URL}:Props){
       </div>
 
       <div className="gallery-content">
-        <ImageList imageList={galleryImages} FilteringOption={filteringOption} BASE_URL={BASE_URL}/>
+        <ImageList imageList={galleryImages} FilteringOption={filteringOption} formSubmitted={formSubmitted} BASE_URL={BASE_URL}/>
 
       </div>
     </div>

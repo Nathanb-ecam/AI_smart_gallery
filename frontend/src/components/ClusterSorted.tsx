@@ -34,10 +34,12 @@ function ClusterSorted({groups,cluster_labels,BASE_URL}:Props){
       modifyClusterName(k,newName)
     }
 
+
   return (
       <div className="all-cluster-groups">
         {groups && Object.keys(groups).length != 0 && <h3 className='title'>Cluster-sorted</h3>
 }
+
         {groups && Object.keys(groups).length != 0 &&
         Object.entries(groups).map(([key, value]) => (
         <div className="group" key={key}>

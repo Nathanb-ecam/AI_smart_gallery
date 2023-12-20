@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -9,11 +9,15 @@ import { BASE_URL } from './utils/constants'
 
 function App() {
   const [formSubmitted, setFormSubmitted] = useState(true);
+  const [refreshGallery,setRefreshGallery] = useState(false)
 
-  const handleFormSubmit = () => {
-    console.log("submitted")
+
+
+  const handleFormSubmit = useCallback(() => {
+    // console.log("submitted")
     setFormSubmitted(true);
-  };
+    setRefreshGallery(!refreshGallery)
+  },[refreshGallery])
 
 
   return (
@@ -21,7 +25,7 @@ function App() {
       <AppNavbar></AppNavbar>
     <div className="App-content">
  
-      <ShowGallery formSubmitted={formSubmitted} BASE_URL={BASE_URL} ></ShowGallery>
+      <ShowGallery formSubmitted={formSubmitted} refreshGallery={refreshGallery} BASE_URL={BASE_URL} ></ShowGallery>
     </div>
     <SendImageForm onSubmit = {handleFormSubmit}></SendImageForm>
     </>

@@ -13,13 +13,11 @@ interface Props{
 
 
 function ClassSorted({classes,classNames,sortType,BASE_URL}:Props){
-    console.log("CLASS SORTED",classes)
     // console.log("names",classNames)
     const persons = classes["person"]
     const animals = classes["animal"]
     // console.log("animal",animals)
     const animalGroups = GroupByAnimalTypes(animals)
-    console.log("animalGroups",animalGroups)
     const others = classes["other"]
   return (
     <div className="class-sorted">
@@ -37,7 +35,6 @@ function ClassSorted({classes,classNames,sortType,BASE_URL}:Props){
                 </div>
           ))}
           </div>
-
             <div className="animal-groups">
               {animalGroups && Object.keys(animalGroups).length !=0 && <h3 className='animal-title'>Animals</h3> }
             {
@@ -72,24 +69,6 @@ function ClassSorted({classes,classNames,sortType,BASE_URL}:Props){
                 </div>
           ))}
           </div>
-
-
-      {/* {
-        classes && classes.length > 0 && classes.map((array, indx) => (
-            <div className='subclass' key={indx}>
-              <h3>{array.length!=0 && indx && names[indx]}</h3>
-              <div className="class-image">
-                {array.map((item,index)=>(
-                    <div key={index} className='image-box'>
-                        <img className="galleryimage" src={BASE_URL+item.image_url} alt={item.created_at} />
-                    </div>
-    
-                ))
-                }
-              </div>
-            </div>
-        ))
-      } */}
         </div>
         
     </div>

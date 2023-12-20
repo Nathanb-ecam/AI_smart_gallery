@@ -168,7 +168,7 @@ body{
   margin: 3rem;
 }
 
-.class-sorted .image-box,.class-sorted .animal-group-images, .date-sorted-list-item {
+.date-sorted-list-item {
   padding: var(--image-padding);
 
 }
@@ -181,7 +181,7 @@ body{
 
 .class-sorted .animal-group{
   margin: 1rem 3rem;
-  padding: 1rem;
+  padding: var(--image-padding);
   
 
 }

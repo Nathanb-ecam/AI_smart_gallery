@@ -19,18 +19,21 @@ export enum ListFilteringOptions  {
 interface Props{
     imageList:Array<ApiImageObject>;
     FilteringOption?: ListFilteringOptions | null ;
+    formSubmitted:Boolean;
     BASE_URL:string;
 }
 
 
 
 
-function ImageList({imageList, FilteringOption = null,BASE_URL}:Props){
+function ImageList({imageList, FilteringOption = null,formSubmitted,BASE_URL}:Props){
   const [clusterNames, setClusterNames] = useState<Array<Object>>([]);
   const [classNames, setClassNames] = useState<Array<Object>>([]);
   const [clusterSorted, setClusterSorted] = useState<any>({});
   const [classSorted, setClassSorted] = useState({});
   const [dateSorted, setDateSorted] = useState<Array<ApiImageObject>>([]);
+  // const [formSubmitted,setFormSubmitted] = useState(Boolean)
+  
 
   const fetchClusteringNames = async () => {
     try {
@@ -47,7 +50,7 @@ function ImageList({imageList, FilteringOption = null,BASE_URL}:Props){
   };
 
 
-  const fetchGallery = async () => {
+  const fetchClusteredGallery = async () => {
     try {
       const response = await fetch(BASE_URL+"/api/cluster_gallery");
       const result = await response.json();
@@ -55,7 +58,7 @@ function ImageList({imageList, FilteringOption = null,BASE_URL}:Props){
       if(result.gallery){
         const sort = GroupByClusterId(result.gallery)
         setClusterSorted(sort);
-        console.log("clustered",sort)
+        // console.log("clustered",sort)
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -78,7 +81,7 @@ function ImageList({imageList, FilteringOption = null,BASE_URL}:Props){
           break;
         case ListFilteringOptions.CLUSTERED:
           fetchClusteringNames();
-          fetchGallery();
+          fetchClusteredGallery();
           setClassSorted([])
           setDateSorted([])
           break;
@@ -86,7 +89,7 @@ function ImageList({imageList, FilteringOption = null,BASE_URL}:Props){
           // Handle default case or set default values
           break;
       }
-    }, [FilteringOption, imageList, BASE_URL]);
+    }, [FilteringOption, imageList, BASE_URL,formSubmitted]);
 
 
 
