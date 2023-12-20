@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BASE_URL } from '../utils/constants';
 
 interface Props{
   onSubmit:()=>void;
@@ -6,9 +7,6 @@ interface Props{
 
 
 function SendImageForm({onSubmit}:Props){
-  
-  const BASE_URL = "http://localhost:8000/api"
-
   const [selectedImage, setSelectedImage] = useState(new Blob);
   // const [selectedImageLabel, setSelectedImageLabel] = useState("");
 
@@ -22,19 +20,14 @@ function SendImageForm({onSubmit}:Props){
         formData.append('image', selectedImage);
         // formData.append('image_label', selectedImage);
 
-        // Adjust the API endpoint accordingly
-        const response = await fetch(BASE_URL+"/makeImagePrediction", {
+        const response = await fetch(BASE_URL+"/api/makeImagePrediction", {
             method: 'POST',
             body: formData,
-          //   headers: {
-          //     'Content-Type': 'image/jpg', // Set the content type
-              
-          // },
         });
         if (response.ok) {
-            const data = await response.json();
+            const result = await response.json()
             onSubmit()
-            console.log('Upload successful:', data);
+            console.log('Upload successful:', result);
       } else {
         console.error('Error reading answer:', response.statusText);
       }

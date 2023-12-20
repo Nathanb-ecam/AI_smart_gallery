@@ -43,13 +43,11 @@ def draw_element_informations(image,element_class_id,confidence,element_boundari
 def get_cluster_labels(request):
     all_cluster_labels = ClusterNames.objects.all()
     # Serialize the objects to a JSON format
-    serialized_cluster_names = [
-        {
-            'cluster_id': cluster.cluster_id,
-            'cluster_name': cluster.cluster_name,
-        }
+    serialized_cluster_names = {
+        
+            cluster.cluster_id:cluster.cluster_name
         for cluster in all_cluster_labels
-    ]
+    }
     return Response({'cluster_names': serialized_cluster_names})
 
 @csrf_exempt
@@ -64,6 +62,25 @@ def add_cluster_name(request):
             return JsonResponse(response_data, status=201)
         except Exception as e:
             return JsonResponse({"error":e}, status=500)
+        
+@api_view(['PUT'])
+def modify_cluster_name(request,cluster_id):
+    try:
+        instance = ClusterNames.objects.get(pk=cluster_id)
+    except ClusterNames.DoesNotExist:
+        return JsonResponse("This Cluster id does not exist ",status=404)
+
+    if request.method == 'PUT':
+        new_cluster_name = request.data.get('cluster_name')
+
+        if new_cluster_name:
+            instance.cluster_name = new_cluster_name
+            instance.save()
+
+            return JsonResponse({'cluster_name': instance.cluster_name})
+        else:
+            return JsonResponse({'error': 'cluster_name is required'}, status=400)
+
 
 
 @api_view(['GET'])
@@ -218,8 +235,14 @@ def cluster_human_images(request):
                 # filtered_clusters.pop()
                 # print(current_img_path,ids)
 
-        print("all_cluster_ids",all_cluster_ids)
-        #for      
+        # print("all_cluster_ids",all_cluster_ids)
+        for id in all_cluster_ids:
+            existing_record = ClusterNames.objects.filter(cluster_id=id).first()
+
+            if not existing_record:
+                ClusterNames.objects.create(cluster_id=id, cluster_name='')
+
+
         return redirect('get_gallery')
     
     except Exception as e:

@@ -7,7 +7,7 @@ from django.db import models
 #     created_at = models.DateTimeField(auto_now_add=True)
 
 class ClusterNames(models.Model):
-    cluster_id = models.IntegerField()
+    cluster_id = models.IntegerField(primary_key=True)
     cluster_name = models.CharField(max_length=255)
 
 

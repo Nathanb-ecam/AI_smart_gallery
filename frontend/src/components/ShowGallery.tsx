@@ -20,26 +20,14 @@ function ShowGallery({formSubmitted,BASE_URL}:Props){
 
   const handleDropdownSelect:React.ComponentProps<typeof Dropdown>['onSelect']= (eventKey:string) => {
     setDropdownValue(eventKey as string);
+    
     // console.log(eventKey as string);
     switch(eventKey as string){
       case 'DATE':
         setFilteringOption(ListFilteringOptions.BYDATE)
         break
       case 'CLUSTERED':
-        const fetchClusteredGallery = async () => {
-          try {
-            const response = await fetch(BASE_URL+"/api/cluster_gallery");
-            const result = await response.json();
-            // console.log("Gallery", result)
-            if(result.gallery){
-              setGalleryImages(result.gallery);
-              setFilteringOption(ListFilteringOptions.CLUSTERED)
-            }
-          } catch (error) {
-            console.error('Error fetching data:', error);
-          }
-        };
-        fetchClusteredGallery()
+        setFilteringOption(ListFilteringOptions.CLUSTERED)
         break
       case 'CLASSIFIED':
         setFilteringOption(ListFilteringOptions.CLASSIFIED)
@@ -48,15 +36,25 @@ function ShowGallery({formSubmitted,BASE_URL}:Props){
   }
 
 
-
+  const fetchGallery = async () => {
+    try {
+      const response = await fetch(BASE_URL+"/api/fetch_gallery");
+      const result = await response.json();
+      // console.log("Gallery", result)
+      if(result.gallery){
+        setGalleryImages(result.gallery);
+      }
+    } catch (error) {
+      // console.error('Error fetching data:', error);
+    }
+  };
 
     useEffect(() => {
-      // Perform actions when formSubmitted changes
       if (formSubmitted) {
-        // Trigger any logic needed in response to the form submission
-        // For example, refetch data or update internal state
-        console.log('Form submitted. Recompose Gallery.');
+        // console.log('Form submitted. Recompose Gallery.');
         fetchGallery()
+
+
       }
     }, [formSubmitted]);
 

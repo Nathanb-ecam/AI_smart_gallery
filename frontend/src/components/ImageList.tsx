@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ClusterSorted from './ClusterSorted';
 import { CompareDates, GroupByClusterId,SortByClasses  } from '../utils/ListSortings';
 // const ANIMAL_OF_INTEREST = ['bird','cat','dog','horse','sheep','cow','elephant','bear','zebra','giraffe']
-import { ApiImageObject, ClusterName } from '../utils/DTOinterfaces';
+import { ApiImageObject} from '../utils/DTOinterfaces';
 import DateSorted from './DateSorted';
 import ClassSorted from './ClassSorted';
 
@@ -26,24 +26,40 @@ interface Props{
 
 
 function ImageList({imageList, FilteringOption = null,BASE_URL}:Props){
-  const [clusterNames, setClusterNames] = useState<Array<ClusterName>>([]);
+  const [clusterNames, setClusterNames] = useState<Array<Object>>([]);
   const [clusterSorted, setClusterSorted] = useState<any>({});
   const [classSorted, setClassSorted] = useState<Array<Array<ApiImageObject>>>([]);
   const [dateSorted, setDateSorted] = useState<Array<ApiImageObject>>([]);
 
-  const fetchClusteringData = async () => {
+  const fetchClusteringNames = async () => {
     try {
       const response = await fetch(BASE_URL + "/api/cluster_names");
       const result = await response.json();
       if (result.cluster_names) {
-        const sort = GroupByClusterId(imageList);
-        setClusterSorted(sort);
+        // const sort = GroupByClusterId(imageList);
+        // setClusterSorted(sort);
         setClusterNames(result.cluster_names);
+      }
+    } catch (error) {
+      // console.error('Error fetching data:', error);
+    }
+  };
+
+  const fetchGallery = async () => {
+    try {
+      const response = await fetch(BASE_URL+"/api/cluster_gallery");
+      const result = await response.json();
+      // console.log("Gallery", result)
+      if(result.gallery){
+        const sort = GroupByClusterId(result.gallery)
+        setClusterSorted(sort);
+        console.log("clustered",sort)
       }
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
+
   
   useEffect(() => {
       switch (FilteringOption) {
@@ -59,7 +75,8 @@ function ImageList({imageList, FilteringOption = null,BASE_URL}:Props){
           setClusterSorted({})
           break;
         case ListFilteringOptions.CLUSTERED:
-          fetchClusteringData();
+          fetchClusteringNames();
+          fetchGallery();
           setClassSorted([])
           setDateSorted([])
           break;

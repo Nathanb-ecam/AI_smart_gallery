@@ -11,6 +11,7 @@ function App() {
   const [formSubmitted, setFormSubmitted] = useState(true);
 
   const handleFormSubmit = () => {
+    console.log("submitted")
     setFormSubmitted(true);
   };
 
