@@ -57,3 +57,34 @@ export function SortByClasses(imageList:Array<Object>) {
   
     return { personList, animalList, otherList };
 }
+
+
+export function GroupByAnimalTypes(animals:Array<ApiImageObject>) {
+  const groupedObjects = {};
+  const uniqueAnimalTypes = new Set();
+
+  if(animals != undefined){
+    animals.forEach((obj) => {
+      const imageDetection = obj.result_json["image-detection"];
+  
+      if (imageDetection && Array.isArray(imageDetection)) {
+        imageDetection.forEach((animalType) => {
+          if (!uniqueAnimalTypes.has(animalType)) {
+            uniqueAnimalTypes.add(animalType);
+  
+            if (!groupedObjects[animalType]) {
+              groupedObjects[animalType] = [];
+            }
+  
+            groupedObjects[animalType].push(obj);
+          }
+        });
+      }
+    });
+  
+    return groupedObjects;
+  }
+  else{
+    return {}
+  }
+}

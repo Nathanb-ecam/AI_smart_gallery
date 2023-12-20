@@ -27,8 +27,9 @@ interface Props{
 
 function ImageList({imageList, FilteringOption = null,BASE_URL}:Props){
   const [clusterNames, setClusterNames] = useState<Array<Object>>([]);
+  const [classNames, setClassNames] = useState<Array<Object>>([]);
   const [clusterSorted, setClusterSorted] = useState<any>({});
-  const [classSorted, setClassSorted] = useState<Array<Array<ApiImageObject>>>([]);
+  const [classSorted, setClassSorted] = useState({});
   const [dateSorted, setDateSorted] = useState<Array<ApiImageObject>>([]);
 
   const fetchClusteringNames = async () => {
@@ -44,6 +45,7 @@ function ImageList({imageList, FilteringOption = null,BASE_URL}:Props){
       // console.error('Error fetching data:', error);
     }
   };
+
 
   const fetchGallery = async () => {
     try {
@@ -70,7 +72,7 @@ function ImageList({imageList, FilteringOption = null,BASE_URL}:Props){
           break;
         case ListFilteringOptions.CLASSIFIED:
           const { personList, animalList, otherList } = SortByClasses(imageList);
-          setClassSorted([personList, animalList, otherList]);
+          setClassSorted({"person":personList,"animal": animalList,"other" :otherList});
           setDateSorted([])
           setClusterSorted({})
           break;
@@ -96,11 +98,11 @@ function ImageList({imageList, FilteringOption = null,BASE_URL}:Props){
         }
 
         {dateSorted && dateSorted.length != 0 &&
-          <DateSorted list={dateSorted} listName="Date-sorted" BASE_URL={BASE_URL} />
+          <DateSorted list={dateSorted} listName="Sorted by dates" BASE_URL={BASE_URL} />
         }
 
-        {classSorted && classSorted.length != 0 &&
-          <ClassSorted classes={classSorted} className="Class-sorted" BASE_URL={BASE_URL} />
+        {classSorted && 
+          <ClassSorted classes={classSorted} classNames={classNames} sortType="Sorted by classes" BASE_URL={BASE_URL} />
         }
       </>
   );

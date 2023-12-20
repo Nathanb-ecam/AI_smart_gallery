@@ -71,7 +71,7 @@ def perform_clustering(pickle_file_path):
             # determine the total number of unique faces found in the dataset
             labelIDs = np.unique(clt.labels_)
             # print("labelIDs",labelIDs)
-            numUniqueFaces = len(np.where(labelIDs > -1)[0])
+            # numUniqueFaces = len(np.where(labelIDs > s-1)[0])
             # print("[INFO] # unique faces: {}".format(numUniqueFaces))
             clusters = []
             for labelID in labelIDs:

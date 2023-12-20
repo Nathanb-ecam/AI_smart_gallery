@@ -57,12 +57,14 @@ def add_cluster_name(request):
         try:
             data = json.loads(request.body.decode('utf-8'))
             obj = ClusterNames.objects.create(cluster_id=data['cluster_id'], cluster_name=data['cluster_name'])
-            print(data)
+            # print(data)
             response_data = {'cluster_id': obj.cluster_id, 'cluster_name': obj.cluster_name}
             return JsonResponse(response_data, status=201)
         except Exception as e:
             return JsonResponse({"error":e}, status=500)
         
+        
+
 @api_view(['PUT'])
 def modify_cluster_name(request,cluster_id):
     try:
@@ -136,7 +138,7 @@ def predict_image(request):
                 class_id = np.argmax(scores)
                 confidence = scores[class_id]
 
-                if confidence > 0.5:
+                if confidence > 0.75:
                     center_x = int(detection[0] * image.shape[1])
                     center_y = int(detection[1] * image.shape[0])
                     w = int(detection[2] * image.shape[1])
@@ -187,11 +189,7 @@ def predict_image(request):
             print("[INFO] This image contains a person")
             print("[INFO] Need to process encodings")
             make_encodings(imagePaths=[image_path],pickle_file_path = PICKLE_FILE_PATH)
-
-
         return JsonResponse(message)
-        # else:
-            # return JsonResponse({"image-detection":"Nothing was identified in the image"})
     else:
         return JsonResponse({"error": "Only POST requests are allowed"})
     

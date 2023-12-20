@@ -11,9 +11,6 @@ interface Props{
 
 
 function ClusterSorted({groups,cluster_labels,BASE_URL}:Props){
-    console.log("Cluster Group",groups)
-    console.log("cluster_labels",cluster_labels)
-
     const modifyClusterName = async (clusterId:number,clusterNewName:string) => {
       try {
         const response = await fetch(BASE_URL+`/api/modify_cluster_name/${clusterId}`, {
@@ -39,21 +36,22 @@ function ClusterSorted({groups,cluster_labels,BASE_URL}:Props){
 
   return (
       <div className="all-cluster-groups">
-        <h3 className='title'>Cluster-sorted</h3>
-        {groups && groups.length != 0 &&
+        {groups && Object.keys(groups).length != 0 && <h3 className='title'>Cluster-sorted</h3>
+}
+        {groups && Object.keys(groups).length != 0 &&
         Object.entries(groups).map(([key, value]) => (
         <div className="group" key={key}>
-          <h3 contentEditable
+          <h3 className='cluster-name' 
+            contentEditable
             onBlur={(e) => handleClusterNameChange(key, e.currentTarget.innerText)}
               >
             {(key && cluster_labels[key]) ||  key }
-            {/* {key} */}
             </h3>
-            {/* <button onClick={() => handleButtonClick(key, value)}>Update</button> */}
+
           <div className="cluster-single-group">
             {value.map((item:any, index:any) => (
-              <div key={index}>
-                <img className="galleryimage" src={BASE_URL+item.image_url} alt={item.created_at} />              
+              <div className='clustered-single-image' key={index}>
+                <img className="galleryimage" src={BASE_URL+item.image_url} alt={item.filename} />              
               </div>
             ))}
 

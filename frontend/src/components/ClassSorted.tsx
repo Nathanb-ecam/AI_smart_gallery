@@ -1,38 +1,95 @@
 import React, { useEffect, useState } from 'react';
 import { ApiImageObject } from '../utils/DTOinterfaces';
+import { GroupByAnimalTypes } from '../utils/ListSortings';
 
 
 
 interface Props{
-    classes: Array<Array<ApiImageObject>>;
-    className: string;
+    classes:any;
+    classNames: Array<Object>;
+    sortType: string;
     BASE_URL:string;
 }
 
 
-function ClassSorted({classes,className,BASE_URL}:Props){
+function ClassSorted({classes,classNames,sortType,BASE_URL}:Props){
     console.log("CLASS SORTED",classes)
-
+    // console.log("names",classNames)
+    const persons = classes["person"]
+    const animals = classes["animal"]
+    // console.log("animal",animals)
+    const animalGroups = GroupByAnimalTypes(animals)
+    console.log("animalGroups",animalGroups)
+    const others = classes["other"]
   return (
     <div className="class-sorted">
-        <h3 className='title'>{className}</h3>
+      {classes && classes.length !=0 &&         <h3 className='title'>{sortType}</h3>
+}
         <div className="class-sorted-images">
-      {
+
+          {
+            persons && <h3 className='person-title'>Person</h3>
+          }
+          <div className='all-persons'>
+          {persons && persons.length>0 && persons.map((obj,index)=>(
+                  <div key={index} className='image-box'>
+                    <img className="galleryimage" src={BASE_URL+obj.image_url} alt={obj.filename} />
+                </div>
+          ))}
+          </div>
+
+            <div className="animal-groups">
+              {animalGroups && Object.keys(animalGroups).length !=0 && <h3 className='animal-title'>Animals</h3> }
+            {
+              Object.keys(animalGroups).map((animalType) => (
+                <div key={animalType} className="animal-group">
+                  <h3 className='animal-class'>{animalType}</h3>
+                  <div className="animal-group-images">
+                    {animalGroups[animalType].map((obj, index) => (
+                      <div key={index} className="image-box">
+                        <img
+                          className="galleryimage"
+                          src={BASE_URL + obj.image_url}
+                          alt={obj.filename}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            }
+            </div>
+            
+
+
+            {
+            others && others.length!=0 && <h3 className='person-title'>Others</h3>
+          }
+          <div className='all-others'>
+          {others && others.length>0 && others.map((obj,index)=>(
+                  <div key={index} className='image-box'>
+                    <img className="galleryimage" src={BASE_URL+obj.image_url} alt={obj.filename} />
+                </div>
+          ))}
+          </div>
+
+
+      {/* {
         classes && classes.length > 0 && classes.map((array, indx) => (
             <div className='subclass' key={indx}>
-              <h3>{array.length!=0 && indx}</h3>
+              <h3>{array.length!=0 && indx && names[indx]}</h3>
+              <div className="class-image">
                 {array.map((item,index)=>(
                     <div key={index} className='image-box'>
-                        {/* <p>{item.filename}</p> */}
                         <img className="galleryimage" src={BASE_URL+item.image_url} alt={item.created_at} />
                     </div>
     
                 ))
                 }
+              </div>
             </div>
-
         ))
-      }
+      } */}
         </div>
         
     </div>

@@ -15,6 +15,7 @@ urlpatterns = [
     path('api/modify_cluster_name/<int:cluster_id>', modify_cluster_name, name='modify_cluster_name'),
 
 
+
 ]
 
 
