@@ -77,8 +77,3 @@ function ClassSorted({classes,classNames,sortType,BASE_URL}:Props){
 
 export default ClassSorted;
 
-
-{/* <div className="image-box" key={index}>
-<p>{item.image_url}</p>
-<p>{item.result_json["image-detection"]}</p>
-</div> */}

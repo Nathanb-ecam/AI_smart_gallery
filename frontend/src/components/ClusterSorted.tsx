@@ -5,12 +5,22 @@ import { ApiImageObject } from '../utils/DTOinterfaces';
 
 interface Props{
     groups: any;
-    cluster_labels:Array<Object>
     BASE_URL:string;
 }
 
 
-function ClusterSorted({groups,cluster_labels,BASE_URL}:Props){
+function ClusterSorted({groups,BASE_URL}:Props){
+  // console.log("groups",groups)
+  Object.entries(groups).map(([key, group],image_idx)=>{
+    console.log()
+    console.log("group", group);
+    // console.log("image_idx", image_idx);
+    // console.log("group[image_idx]", group[image_idx]);
+    console.log("group[image_idx]?.cluster_info", group[image_idx]?.cluster_info);
+    // console.log("group[image_idx]?.cluster_info?.tags", group[image_idx]?.cluster_info?.tags);
+  })
+
+
     const modifyClusterName = async (clusterId:number,clusterNewName:string) => {
       try {
         const response = await fetch(BASE_URL+`/api/modify_cluster_name/${clusterId}`, {
@@ -21,10 +31,10 @@ function ClusterSorted({groups,cluster_labels,BASE_URL}:Props){
           body: JSON.stringify({"cluster_name":clusterNewName}),
         });
         const result = await response.json()
-        // console.log("Modify cluster name", result)
+        console.log("New cluster tag added", result)
       } 
       catch (error) {
-        // console.error('Error fetching data:', error);
+        console.error('Error fetching data:', error);
       }
     };
 
@@ -41,17 +51,17 @@ function ClusterSorted({groups,cluster_labels,BASE_URL}:Props){
 }
 
         {groups && Object.keys(groups).length != 0 &&
-        Object.entries(groups).map(([key, value]) => (
-        <div className="group" key={key}>
+        Object.entries(groups).map(([key, group],image_idx) => (
+        <div className="group" key={image_idx}>
           <h3 className='cluster-name' 
             contentEditable
             onBlur={(e) => handleClusterNameChange(key, e.currentTarget.innerText)}
               >
-            {(key && cluster_labels[key]) ||  key }
+            {(key && group[0].cluster_info?.tags) ||  key }
             </h3>
 
           <div className="cluster-single-group">
-            {value.map((item:any, index:any) => (
+            {group.map((item:any, index:any) => (
               <div className='clustered-single-image' key={index}>
                 <img className="galleryimage" src={BASE_URL+item.image_url} alt={item.filename} />              
               </div>

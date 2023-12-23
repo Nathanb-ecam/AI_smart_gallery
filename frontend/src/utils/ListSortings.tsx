@@ -19,13 +19,13 @@ export function GroupByClusterId(imageList:Array<ApiImageObject>)  {
       // console.log(obj.result_json["image-detection"])
       let classes = obj.result_json["image-detection"]
       if(classes.includes('person')){
-        if(obj.cluster_ids.ids.length === 0){
+        if(obj.cluster_info.ids.length === 0){
           if(!groups["default"]){
             groups["default"] = []
           }
           groups["default"].push(obj) 
         }else{
-          for( let id of obj.cluster_ids.ids){
+          for( let id of obj.cluster_info.ids){
             if(!groups[id]){
               groups[id] = []
             }

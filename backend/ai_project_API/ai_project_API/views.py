@@ -9,7 +9,7 @@ from django.db.models import F
 import cv2
 import numpy as np
 
-from .models import GalleryImage, ClusterNames
+from .models import GalleryImage
 from ai_project_API.ai_utils import make_encodings, perform_clustering
 
 with open("ai_project_API/model_data/coco.names", "r") as f:
@@ -17,16 +17,6 @@ with open("ai_project_API/model_data/coco.names", "r") as f:
 
 PICKLE_FILE_PATH = "ai_project_API/model_data/encodings.pickle"
 CLASSES_OF_INTEREST = ["person","cat","dog","bird","horse","sheep","cow","elephant","bear","zebra","giraffe"]
-
-
-
-def hello(request):
-    return HttpResponse("Hello, Django!")
-
-
-
-def root_path(request):
-    return HttpResponse("Ai project api")
 
 
 
@@ -39,52 +29,65 @@ def draw_element_informations(image,element_class_id,confidence,element_boundari
     cv2.putText(image, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
     return element_class,confidence
 
-@api_view(['GET'])
-def get_cluster_labels(request):
-    all_cluster_labels = ClusterNames.objects.all()
-    # Serialize the objects to a JSON format
-    serialized_cluster_names = {
+# @api_view(['GET'])
+# def get_cluster_labels(request):
+#     all_cluster_labels = ClusterNames.objects.all()
+#     # Serialize the objects to a JSON format
+#     serialized_cluster_names = {
         
-            cluster.cluster_id:cluster.cluster_name
-        for cluster in all_cluster_labels
-    }
-    return Response({'cluster_names': serialized_cluster_names})
+#             cluster.cluster_id:cluster.cluster_name
+#         for cluster in all_cluster_labels
+#     }
+#     return Response({'cluster_names': serialized_cluster_names})
 
-@csrf_exempt
-def add_cluster_name(request):
-    # Create a new record
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body.decode('utf-8'))
-            obj = ClusterNames.objects.create(cluster_id=data['cluster_id'], cluster_name=data['cluster_name'])
-            # print(data)
-            response_data = {'cluster_id': obj.cluster_id, 'cluster_name': obj.cluster_name}
-            return JsonResponse(response_data, status=201)
-        except Exception as e:
-            return JsonResponse({"error":e}, status=500)
+# @csrf_exempt
+# def add_cluster_name(request):
+#     # Create a new record
+#     if request.method == 'POST':
+#         try:
+#             data = json.loads(request.body.decode('utf-8'))
+#             obj = ClusterNames.objects.create(cluster_id=data['cluster_id'], cluster_name=data['cluster_name'])
+#             # print(data)
+#             response_data = {'cluster_id': obj.cluster_id, 'cluster_name': obj.cluster_name}
+#             return JsonResponse(response_data, status=201)
+#         except Exception as e:
+#             return JsonResponse({"error":e}, status=500)
         
         
 
 @api_view(['PUT'])
 def modify_cluster_name(request,cluster_id):
     try:
-        instance = ClusterNames.objects.get(pk=cluster_id)
-    except ClusterNames.DoesNotExist:
+        all_images = GalleryImage.objects.all()
+
+        # Check if any GalleryImage object contains the desired_cluster_id in its cluster_info ids
+        instances = [image for image in all_images if cluster_id in image.cluster_info.get('ids', [])]
+    except GalleryImage.DoesNotExist:
         return JsonResponse("This Cluster id does not exist ",status=404)
 
     if request.method == 'PUT':
         new_cluster_name = request.data.get('cluster_name')
 
         if new_cluster_name:
-            instance.cluster_name = new_cluster_name
-            instance.save()
+            for instance in instances:
+                old_tags = instance.cluster_info.get("tags")
+                if old_tags is None:
+                    old_tags = ""
+                updated_tags = str(new_cluster_name)
+                instance.cluster_info["tags"] = updated_tags
+                instance.save()
 
-            return JsonResponse({'cluster_name': instance.cluster_name})
+
+
+
+
+            return JsonResponse({'new_cluster_tag': new_cluster_name})
         else:
             return JsonResponse({'error': 'cluster_name is required'}, status=400)
 
 
 
+@csrf_exempt
 @api_view(['GET'])
 def get_gallery(request):
     all_gallery_images = GalleryImage.objects.all()
@@ -94,7 +97,7 @@ def get_gallery(request):
             'image_url': image.image.url,
             'filename': image.image.name,
             'result_json': image.result_json,
-            'cluster_ids': image.cluster_ids,
+            'cluster_info': image.cluster_info,
             'created_at': image.created_at
         }
         for image in all_gallery_images
@@ -180,7 +183,7 @@ def predict_image(request):
             respond with the url of the image and the detection result
         """
       
-        detected_image = GalleryImage(image=uploaded_file, result_json={"image-detection": all_identified_classes},cluster_ids={"ids":[]})
+        detected_image = GalleryImage(image=uploaded_file, result_json={"image-detection": all_identified_classes},cluster_info={"ids":[],"tags":""})
         detected_image.save()
         image_path = detected_image.image.url
         message = {"image-detection":all_identified_classes,"image_url":image_path}
@@ -227,18 +230,10 @@ def cluster_human_images(request):
                     if id not in all_cluster_ids:
                         all_cluster_ids.append(id)
                 # print("stored cluster data",cluster_data)
-                detected_image.cluster_ids["ids"] = ids
+                detected_image.cluster_info["ids"] = ids
                 # detected_image.cluster_ids["ids"] = cluster_data
                 detected_image.save()
-                # filtered_clusters.pop()
-                # print(current_img_path,ids)
 
-        # print("all_cluster_ids",all_cluster_ids)
-        for id in all_cluster_ids:
-            existing_record = ClusterNames.objects.filter(cluster_id=id).first()
-
-            if not existing_record:
-                ClusterNames.objects.create(cluster_id=id, cluster_name='')
 
 
         return redirect('get_gallery')

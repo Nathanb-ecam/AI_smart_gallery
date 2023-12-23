@@ -27,27 +27,12 @@ interface Props{
 
 
 function ImageList({imageList, FilteringOption = null,formSubmitted,BASE_URL}:Props){
-  const [clusterNames, setClusterNames] = useState<Array<Object>>([]);
   const [classNames, setClassNames] = useState<Array<Object>>([]);
   const [clusterSorted, setClusterSorted] = useState<any>({});
   const [classSorted, setClassSorted] = useState({});
   const [dateSorted, setDateSorted] = useState<Array<ApiImageObject>>([]);
-  // const [formSubmitted,setFormSubmitted] = useState(Boolean)
   
 
-  const fetchClusteringNames = async () => {
-    try {
-      const response = await fetch(BASE_URL + "/api/cluster_names");
-      const result = await response.json();
-      if (result.cluster_names) {
-        // const sort = GroupByClusterId(imageList);
-        // setClusterSorted(sort);
-        setClusterNames(result.cluster_names);
-      }
-    } catch (error) {
-      // console.error('Error fetching data:', error);
-    }
-  };
 
 
   const fetchClusteredGallery = async () => {
@@ -56,9 +41,10 @@ function ImageList({imageList, FilteringOption = null,formSubmitted,BASE_URL}:Pr
       const result = await response.json();
       // console.log("Gallery", result)
       if(result.gallery){
+        // console.log("clus data",result.gallery)
         const sort = GroupByClusterId(result.gallery)
         setClusterSorted(sort);
-        // console.log("clustered",sort)
+        // console.log("clustered sorted",sort)
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -80,7 +66,7 @@ function ImageList({imageList, FilteringOption = null,formSubmitted,BASE_URL}:Pr
           setClusterSorted({})
           break;
         case ListFilteringOptions.CLUSTERED:
-          fetchClusteringNames();
+          // fetchClusteringNames();
           fetchClusteredGallery();
           setClassSorted([])
           setDateSorted([])
@@ -97,7 +83,7 @@ function ImageList({imageList, FilteringOption = null,formSubmitted,BASE_URL}:Pr
   return (
       <>
         {clusterSorted && Object.keys(clusterSorted).length != 0 &&
-          <ClusterSorted groups={clusterSorted} cluster_labels={clusterNames} BASE_URL={BASE_URL} />
+          <ClusterSorted groups={clusterSorted}  BASE_URL={BASE_URL} />
         }
 
         {dateSorted && dateSorted.length != 0 &&

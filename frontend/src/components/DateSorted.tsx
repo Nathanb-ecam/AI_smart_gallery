@@ -13,7 +13,7 @@ interface Props{
 function DateSorted({list,listName,BASE_URL}:Props){
   return (
     <div className="date-sorted">
-      {list && list.length !=0 &&       <h3 className='date-sorted-title'>{listName}</h3>
+      {list && list.length !=0 &&       <h3 className='title'>{listName}</h3>
 }
       <div className="date-sorted-list">
       {
