@@ -1,0 +1,5 @@
+backend/ai_project_API/ai_project_API/migrations
+backend/ai_project_API/ai_project_API/__pycache__
+backend/ai_project_API/ai_project_API/model_data
+backend/ai_project_API/db.sqlite3
+backend/ai_project_API/uploads

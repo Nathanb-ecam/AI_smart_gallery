@@ -6,13 +6,12 @@ import { GroupByAnimalTypes } from '../utils/ListSortings';
 
 interface Props{
     classes:any;
-    classNames: Array<Object>;
-    sortType: string;
+    classNames: Array<Object>;    
     BASE_URL:string;
 }
 
 
-function ClassSorted({classes,classNames,sortType,BASE_URL}:Props){
+function ClassSorted({classes,classNames,BASE_URL}:Props){
     // console.log("names",classNames)
     const persons = classes["person"]
     const animals = classes["animal"]
@@ -21,12 +20,10 @@ function ClassSorted({classes,classNames,sortType,BASE_URL}:Props){
     const others = classes["other"]
   return (
     <div className="class-sorted">
-      {classes && classes.length !=0 &&         <h3 className='title'>{sortType}</h3>
-}
         <div className="class-sorted-images">
 
           {
-            persons && <h3 className='person-title'>Person</h3>
+            persons && <h5 className='person-title'>Humans</h5>
           }
           <div className='all-persons'>
           {persons && persons.length>0 && persons.map((obj,index)=>(
@@ -36,11 +33,11 @@ function ClassSorted({classes,classNames,sortType,BASE_URL}:Props){
           ))}
           </div>
             <div className="animal-groups">
-              {animalGroups && Object.keys(animalGroups).length !=0 && <h3 className='animal-title'>Animals</h3> }
+              {animalGroups && Object.keys(animalGroups).length !=0 && <h5 className='animal-title'>Animals</h5> }
             {
               Object.keys(animalGroups).map((animalType) => (
                 <div key={animalType} className="animal-group">
-                  <h3 className='animal-class'>{animalType}</h3>
+                  <h5 className='animal-class'>{animalType}</h5>
                   <div className="animal-group-images">
                     {animalGroups[animalType].map((obj, index) => (
                       <div key={index} className="image-box">

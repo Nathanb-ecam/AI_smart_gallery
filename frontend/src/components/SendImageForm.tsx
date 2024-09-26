@@ -38,8 +38,9 @@ function SendImageForm({onSubmit}:Props){
 
   return (
     <div className='upload-section'>
-        <input className="file-upload" type="file" onChange={handleImageChange} required/>
-        <button onClick={handleUpload}>Enregistrer l'image</button>
+        <input id="file-upload" className="file-upload" type="file" onChange={handleImageChange} required style={{display:'none'}}/>
+        <label htmlFor="file-upload">Select image</label>
+        <button onClick={handleUpload}>Save</button>
     </div>
   );
 };

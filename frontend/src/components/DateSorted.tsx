@@ -4,17 +4,14 @@ import { ApiImageObject } from '../utils/DTOinterfaces';
 
 
 interface Props{
-    list: Array<ApiImageObject>;
-    listName: string;
+    list: Array<ApiImageObject>;    
     BASE_URL:string;
 }
 
 
-function DateSorted({list,listName,BASE_URL}:Props){
+function DateSorted({list,BASE_URL}:Props){
   return (
-    <div className="date-sorted">
-      {list && list.length !=0 &&       <h3 className='title'>{listName}</h3>
-}
+    <div className="date-sorted">      
       <div className="date-sorted-list">
       {
         list && list.length > 0 && list.map((item,index) => (

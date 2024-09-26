@@ -4,8 +4,6 @@ export interface DetectedClasses{
 }
 
 
-
-
 export interface ApiImageObject{
     image_url:string,
     filename:string,

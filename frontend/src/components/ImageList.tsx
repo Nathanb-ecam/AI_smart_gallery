@@ -26,7 +26,7 @@ interface Props{
 
 
 
-function ImageList({imageList, FilteringOption = null,formSubmitted,BASE_URL}:Props){
+function ImageList({imageList, FilteringOption = ListFilteringOptions.BYDATE,formSubmitted,BASE_URL}:Props){
   const [classNames, setClassNames] = useState<Array<Object>>([]);
   const [clusterSorted, setClusterSorted] = useState<any>({});
   const [classSorted, setClassSorted] = useState({});
@@ -87,11 +87,11 @@ function ImageList({imageList, FilteringOption = null,formSubmitted,BASE_URL}:Pr
         }
 
         {dateSorted && dateSorted.length != 0 &&
-          <DateSorted list={dateSorted} listName="Sorted by dates" BASE_URL={BASE_URL} />
+          <DateSorted list={dateSorted}  BASE_URL={BASE_URL} />
         }
 
         {classSorted && 
-          <ClassSorted classes={classSorted} classNames={classNames} sortType="Sorted by classes" BASE_URL={BASE_URL} />
+          <ClassSorted classes={classSorted} classNames={classNames} BASE_URL={BASE_URL} />
         }
       </>
   );

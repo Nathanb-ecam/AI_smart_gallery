@@ -18,6 +18,7 @@ function ShowGallery({formSubmitted,refreshGallery,BASE_URL}:Props){
   const [galleryImages, setGalleryImages] = useState<Array<ApiImageObject>>([]);
   const [dropdownValue,setDropdownValue] = useState<string | null>(null);
   const [filteringOption,setFilteringOption] = useState<ListFilteringOptions>(ListFilteringOptions.BYDATE);
+  const [currentFilter, setCurrentFilter] = useState("Filter");
 
   const handleDropdownSelect:React.ComponentProps<typeof Dropdown>['onSelect']= (eventKey:string) => {
     setDropdownValue(eventKey as string);
@@ -26,13 +27,16 @@ function ShowGallery({formSubmitted,refreshGallery,BASE_URL}:Props){
     switch(eventKey as string){
       case 'DATE':
         setFilteringOption(ListFilteringOptions.BYDATE)
+        setCurrentFilter("Date")
         // fetchGallery()
         break
       case 'CLUSTERED':
         setFilteringOption(ListFilteringOptions.CLUSTERED)
+        setCurrentFilter("Clusters")
         break
       case 'CLASSIFIED':
         setFilteringOption(ListFilteringOptions.CLASSIFIED)
+        setCurrentFilter("Classes")
         // fetchGallery()
         break
     }
@@ -65,7 +69,7 @@ function ShowGallery({formSubmitted,refreshGallery,BASE_URL}:Props){
       <div className="gallery-header">
         <Dropdown  onSelect={handleDropdownSelect}>
           <Dropdown.Toggle className="filter-dropdown" variant="success" id="dropdown-basic">
-            FILTERS
+            {currentFilter}
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item eventKey="CLUSTERED">

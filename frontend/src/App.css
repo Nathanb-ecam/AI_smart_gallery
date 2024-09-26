@@ -1,5 +1,6 @@
 :root{
   --main-green: #459445;
+  --main-green: #00a900e0;
   --medium-green: #497a49;
   --light-green: #c1d1c1;
 
@@ -48,18 +49,29 @@ body{
   justify-content: center;
   align-items: center;
   padding:0.3rem 1rem;
-  background:var(--file-upload-background);
   bottom:0%;
   width: 100%;
   height: 8vh;
-  border-top: 1px solid white;
+  border-top: 2px solid var(--file-upload-background);
+  /* background:var(--file-upload-background); */
+  background: white;
+  backdrop-filter: blur(3px);
+}
 
+.upload-section label{
+  color: var(--main-green);
+  padding: 2px 5px;
+  /* border: 1px solid var(--main-green);
+  border-radius: 5px; */
 }
 
 .upload-section button{
   color:white;
+  padding: 2px 10px;
+  margin: 0 5px;
   background: var(--main-green);
   border:var(--light-grey);
+  border-radius: 5px;
   /* border:0.5px solid white; */
 }
 
@@ -72,7 +84,8 @@ body{
 
 .gallery-header .filter-dropdown {
   background: var(--main-green); 
-  color:lightgray;
+  border: none;
+  color:white;
 }
 
 
@@ -90,7 +103,15 @@ body{
   object-fit: cover;
   width: 150px;
   height: 150px;
+  width: 180px;
+  height: 200px;
+  width: 100px;
+  height: 120px;
 }
+
+/* .image-detected, .image-box{
+  background: #393c39;
+} */
 
 
 /* DATE SORTED  */
@@ -232,6 +253,8 @@ body{
     background: var(--light-grey);
     font-size: 0.65rem;
   }
+
+  
 
   .galleryimage{
     object-fit: cover;
